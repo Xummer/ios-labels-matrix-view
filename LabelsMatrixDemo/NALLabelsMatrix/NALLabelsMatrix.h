@@ -7,12 +7,15 @@
 
 #import <UIKit/UIKit.h>
 
-@interface NALLabelsMatrix : UIView {
-    NSArray *columnsWidths;
-    uint numRows;
-    uint dy;
-}
+@interface NALLabelsMatrix : UIView
 
-- (id)initWithFrame:(CGRect)frame andColumnsWidths:(NSArray*)columns;
-- (void)addRecord:(NSArray*)record;
+@property (assign, nonatomic) BOOL m_bIsEditable;
+
+- (id)initWithFrame:(CGRect)frame andColumnsWidths:(NSArray *)columns NS_DESIGNATED_INITIALIZER;
+
+- (NSUInteger)rowsCount;
+
+- (void)addRecord:(NSArray *)record;
+- (void)removeRecordAtRow:(NSUInteger)uiRow;
+
 @end

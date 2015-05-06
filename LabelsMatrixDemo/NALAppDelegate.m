@@ -9,6 +9,10 @@
 #import "NALAppDelegate.h"
 #import "NALLabelsMatrix.h"
 
+@interface NALAppDelegate ()
+@property (strong, nonatomic) NALLabelsMatrix *m_matrix;
+@end
+
 @implementation NALAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
@@ -17,17 +21,8 @@
     // Override point for customization after application launch.
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
-	
-	NALLabelsMatrix* matrix = [[NALLabelsMatrix alloc] initWithFrame:CGRectMake(5, 60, 310, 100) andColumnsWidths:[[NSArray alloc] initWithObjects:@60,@125,@125, nil]];
     
-    
-    [matrix addRecord:[[NSArray alloc] initWithObjects:@" ", @"Old Value", @"New value ", nil]];
-    [matrix addRecord:[[NSArray alloc] initWithObjects:@"Field1", @"hello", @"This is a really really long string and should wrap to multiple lines.", nil]];
-	[matrix addRecord:[[NSArray alloc] initWithObjects:@"Some Date", @"06/24/2013", @"06/30/2013", nil]];
-	[matrix addRecord:[[NSArray alloc] initWithObjects:@"Field2", @"some value", @"some new value", nil]];
-	[matrix addRecord:[[NSArray alloc] initWithObjects:@"Long Fields", @"The quick brown fox jumps over the little lazy dog.", @"some new value", nil]];
-    
-    [self.window addSubview:matrix];
+    [self addMatrix];
 	
     return YES;
 }
@@ -57,6 +52,59 @@
 - (void)applicationWillTerminate:(UIApplication *)application
 {
 	// Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+}
+
+- (void)addMatrix {
+    // ACTION BUTTONS
+    UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+    btn.frame = (CGRect){
+        .origin.x = 160,
+        .origin.y = 20,
+        .size.width = 100,
+        .size.height = 44
+    };
+    btn.backgroundColor = [UIColor redColor];
+    [btn setTitle:@"Remove" forState:UIControlStateNormal];
+    [btn addTarget:self action:@selector(onRemove:)
+  forControlEvents:UIControlEventTouchUpInside];
+    [self.window addSubview:btn];
+    
+    btn = [UIButton buttonWithType:UIButtonTypeCustom];
+    btn.frame = (CGRect){
+        .origin.x = 60,
+        .origin.y = 20,
+        .size.width = 100,
+        .size.height = 44
+    };
+    btn.backgroundColor = [UIColor greenColor];
+    [btn setTitle:@"Add" forState:UIControlStateNormal];
+    [btn addTarget:self action:@selector(onAdd:)
+  forControlEvents:UIControlEventTouchUpInside];
+    [self.window addSubview:btn];
+    
+    // DISPLAY
+    NALLabelsMatrix* matrix = [[NALLabelsMatrix alloc] initWithFrame:CGRectMake(5, 70, 310, 100) andColumnsWidths:@[ @60, @125, @125 ]];
+    
+    matrix.m_bIsEditable = YES;
+    
+    [matrix addRecord:@[ @" ", @"Old Value", @"New value ", ]];
+    [matrix addRecord:@[ @"Field1", @"hello", @"This is a really really long string and should wrap to multiple lines.", ]];
+    [matrix addRecord:@[ @"Some Date", @"06/24/2013", @"06/30/2013", ]];
+    [matrix addRecord:@[ @"Field2", @"some value", @"some new value", ]];
+    [matrix addRecord:@[ @"Long Fields", @"The quick brown fox jumps over the little lazy dog.", @"some new value", ]];
+    
+    self.m_matrix = matrix;
+    
+    [self.window addSubview:matrix];
+}
+
+#pragma mark - Actions
+- (void)onRemove:(id)sender {
+    [_m_matrix removeRecordAtRow:[_m_matrix rowsCount] - 2];
+}
+
+- (void)onAdd:(id)sender {
+    [_m_matrix addRecord:@[ [NSString stringWithFormat:@"Field%@", @( [_m_matrix rowsCount] )], @"Value233333", @"BlaBlaBla", ]];
 }
 
 @end
